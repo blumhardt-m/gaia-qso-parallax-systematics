@@ -1,0 +1,87 @@
+{
+  "pipeline_name": "gaia-qso-parallax-systematics",
+  "gate": "gate1_covariate_control_with_multiscale_gate2",
+  "data": {
+    "input_parquet": "data/processed/qso.parquet",
+    "required_columns": ["ra", "dec", "parallax", "astrometric_n_good_obs_al"],
+    "optional_columns": ["ruwe"]
+  },
+  "canonicalization_dev_plumbing_only": {
+    "note": "TEMPORARY: dev dataset does not yet include DR3 parallax zero-point correction. Do not interpret scientifically.",
+    "parallax_resid_definition": "parallax",
+    "n_transits_definition": "astrometric_n_good_obs_al",
+    "log_n_transits_definition": "log1p(n_transits)"
+  },
+  "target": {
+    "y_column": "parallax_resid"
+  },
+  "spatial_model": {
+    "type": "healpix_median_map",
+    "nside_fine_primary": 64,
+    "fill_value_unseen_pixels": 0.0
+  },
+  "holdout": {
+    "type": "deterministic_coarse_healpix_md5",
+    "nside_coarse": 16,
+    "holdout_mod": 5,
+    "md5_input": "str(coarse_pixel_id)",
+    "test_condition": "md5(str(p)) % holdout_mod == 0",
+    "apply_to": "occupied_coarse_pixels",
+    "min_test_rows": 1000
+  },
+  "models": {
+    "M0": {
+      "description": "Spatial-only prediction (S)",
+      "prediction": "S_test"
+    },
+    "M1": {
+      "description": "S + ridge correction on training residuals using log_n_transits",
+      "covariates": ["log_n_transits"]
+    },
+    "M2": {
+      "description": "S + ridge correction on training residuals using log_n_transits + ruwe (if present)",
+      "covariates": ["log_n_transits", "ruwe"],
+      "condition": "ruwe_present"
+    },
+    "ridge": {
+      "alpha": 1.0,
+      "fit_intercept": true,
+      "fit_target": "r_tr = y_tr - S_tr"
+    }
+  },
+  "metrics": {
+    "primary": "rmse_on_test",
+    "rmse_definition": "sqrt(mean_squared_error(y_true, y_pred))"
+  },
+  "gate2_multiscale": {
+    "enabled": true,
+    "nside_fine_list": [16, 32, 64, 128],
+    "invariants": [
+      "same holdout split (NSIDE_COARSE, md5 rule, HOLDOUT_MOD)",
+      "same covariates and ridge settings",
+      "same fill_value"
+    ],
+    "output_csv": "results/run_YYYYMMDD_HHMMSS/gate2_multiscale.csv"
+  },
+  "outputs": {
+    "run_dir_pattern": "results/run_YYYYMMDD_HHMMSS",
+    "gate1_summary_csv": "gate1_summary.csv",
+    "run_manifest_json": "run_manifest.json"
+  },
+  "gate0_preprocessing_stub": {
+    "status": "not_executed",
+    "objective": "Populate parallax_resid as ZP-corrected parallax residual.",
+    "constraints": [
+      "holdout unchanged",
+      "covariates unchanged",
+      "model class unchanged",
+      "metrics unchanged"
+    ],
+    "inputs_required_for_standard_correction": [
+      "nu_eff_used_in_astrometry OR pseudocolour",
+      "ecliptic latitude (can be computed from ra/dec if not present)"
+    ],
+    "expected_persisted_columns": ["parallax_resid", "zpt_mas"]
+  }
+}
+

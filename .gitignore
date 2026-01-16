@@ -1,5 +1,26 @@
-results/
-outputs/
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+texput.log
+
+# Data files (too large)
+*.parquet
+data/
+
+# Archives
+*.zip
+
+# Python
 __pycache__/
-*.pyc
-.ipynb_checkpoints/
+*.egg-info/
+
+# Generated PDFs (can regenerate)
+main.pdf
+
+# Misc
+-name
+*.bbl
