@@ -62,3 +62,8 @@ setup_and_run_figure_generation.sh
 make_map_lorenz.py
 outputs_paper_locked.zip.sha256
 
+
+# Local-only
+audit/
+figures/
+
