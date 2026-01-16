@@ -1,0 +1,52 @@
+\appendix
+\section{Resolution robustness and sign cancellation}
+This appendix provides supporting analysis on the resolution behavior of the
+concentration diagnostic and motivates the signed-aggregate definition used
+throughout the main text. No additional diagnostics are introduced for inference.
+
+\paragraph{Resolution robustness.}
+To assess sensitivity of the concentration diagnostic to angular resolution,
+we recomputed the signed-aggregate Top-20\% statistic while varying the child
+HEALPix resolution over
+$\mathrm{NSIDE}_{\mathrm{child}} \in \{64,128,256\}$,
+holding the parent grid fixed at
+$\mathrm{NSIDE}_{\mathrm{parent}} = 64$.
+Across this range, the signed-aggregate concentration varies modestly, from
+$C_{0.20}^{\mathrm{signed}} = 0.572$ at
+$\mathrm{NSIDE}_{\mathrm{child}} = 64$
+to $0.540$ at $256$.
+This weak dependence supports the conclusion that the detected concentration
+is not an artifact of pixel-scale choice.
+
+\paragraph{Sign cancellation in legacy definitions.}
+To quantify the mechanism underlying the strong resolution dependence of
+legacy concentration definitions, we compute a sign-cancellation diagnostic
+\[
+\mathrm{cancel\_ratio}
+= \frac{\sum_P |S_P|}{\sum_c |s_c|},
+\]
+where $s_c = N_c \tilde{\varpi}_c$ denotes signed child-pixel contributions and
+$S_P = \sum_{c \in P} s_c$ their aggregation into parent pixels.
+A value of $\mathrm{cancel\_ratio} < 1$ indicates cancellation of opposite-sign
+contributions within parent pixels.
+We find $\mathrm{cancel\_ratio} = 1.00$ at
+$\mathrm{NSIDE}_{\mathrm{child}} = 64$, decreasing to $0.64$ at $128$ and
+$0.40$ at $256$.
+This behavior indicates increasing within-parent sign cancellation at finer
+resolution.
+Consequently, legacy abs-before-sum concentration statistics exhibit strong
+NSIDE dependence.
+This motivates adoption of the signed-aggregate (abs-after-sum) definition as
+the primary concentration metric, as it remains substantially invariant under
+pixel refinement at the scales relevant to this study.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/lorenz_curve_legacy.pdf}
+\caption{\textbf{Legacy Lorenz curve (abs-before-sum), shown for comparison.}
+Lorenz-style curve computed at NSIDE=32 using $w_p = N_p|\tilde{\varpi}_p|$.
+Because the absolute value is applied prior to spatial aggregation, this
+definition is not invariant under pixel refinement and is not used for
+inference in this work.}
+\label{fig:lorenz_legacy_appendix}
+\end{figure}

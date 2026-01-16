@@ -24,3 +24,16 @@ main.pdf
 # Misc
 -name
 *.bbl
+
+# Backups / editor artifacts
+*backup*
+*.bak
+*~
+outputs/**/zip files/
+outputs/**/files (*/
+outputs/**/scripts/Unsaved*
+
+# Figures (regenerate from scripts)
+outputs/**/fig/
+outputs/**/figures/
+outputs/**/.gitkeep

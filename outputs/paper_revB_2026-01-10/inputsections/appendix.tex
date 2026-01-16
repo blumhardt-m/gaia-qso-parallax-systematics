@@ -1,0 +1,58 @@
+\appendix
+\section{Resolution robustness and sign cancellation}
+
+This appendix explores an alternative signed-aggregate concentration definition
+to illustrate how different choices in aggregation order affect resolution
+sensitivity. All results and inferences in the main text use the abs-before-sum
+definition specified in \S2.5; this appendix does not alter those conclusions.
+
+\paragraph{Alternative signed-aggregate construction.}
+To illustrate resolution behavior under different aggregation choices, we
+consider a signed-aggregate variant that applies the absolute value after
+summing child-pixel contributions within parent pixels. We recomputed this
+alternative Top-20\% statistic while varying the child HEALPix resolution over
+$\mathrm{NSIDE}_{\mathrm{child}} \in \{64,128,256\}$,
+holding the parent grid fixed at
+$\mathrm{NSIDE}_{\mathrm{parent}} = 64$.
+Across this range, the signed-aggregate concentration varies modestly, from
+$C_{0.20}^{\mathrm{signed}} = 0.572$ at
+$\mathrm{NSIDE}_{\mathrm{child}} = 64$
+to $0.540$ at $256$.
+Because this construction operates on a fixed parent grid with varying child
+resolution, its numerical values are not expected to match the single-resolution
+$C_{0.20}$ values reported in the main text.
+
+\paragraph{Sign cancellation under refinement.}
+To quantify why different aggregation orders exhibit different resolution
+dependence, we compute a sign-cancellation diagnostic
+\[
+\mathrm{cancel\_ratio}
+= \frac{\sum_P |S_P|}{\sum_c |s_c|},
+\]
+where $s_c = N_c \tilde{\varpi}_c$ denotes signed child-pixel contributions and
+$S_P = \sum_{c \in P} s_c$ their aggregation into parent pixels.
+A value of $\mathrm{cancel\_ratio} < 1$ indicates cancellation of opposite-sign
+contributions within parent pixels.
+
+We find $\mathrm{cancel\_ratio} = 1.00$ at
+$\mathrm{NSIDE}_{\mathrm{child}} = 64$, decreasing to $0.64$ at $128$ and
+$0.40$ at $256$.
+This behavior indicates increasing within-parent sign cancellation at finer
+resolution. Abs-before-sum statistics applied at a single resolution avoid
+this effect by construction, which motivates the choice in the main text.
+The signed-aggregate alternative offers complementary insight into the
+spatial structure of the residual field but is not used for inference in
+this work.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/lorenz_curve_signed.pdf}
+\caption{\textbf{Alternative signed-aggregate Lorenz curve.}
+Lorenz-style curve using the signed-aggregate construction with
+$\mathrm{NSIDE}_{\mathrm{child}} = 128$ aggregated to
+$\mathrm{NSIDE}_{\mathrm{parent}} = 64$, yielding $C_{0.20} = 0.56$.
+This construction illustrates the effect of sign cancellation discussed
+in this appendix; all inferences in the main text use the single-resolution
+abs-before-sum definition (Figure~2).}
+\label{fig:lorenz_signed_appendix}
+\end{figure}

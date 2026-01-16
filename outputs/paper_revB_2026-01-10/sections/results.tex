@@ -1,0 +1,28 @@
+\section{Results}
+
+\subsection{Sky-structured parallax field and concentration diagnostics}
+Figure~1 displays the NSIDE=32 sky map of per-pixel median parallax and the corresponding Lorenz-style cumulative contribution curve constructed from $w_s = N_s |\tilde{\varpi}_s|$ at NSIDE=32. The Top-20\% contribution statistic remains stable across angular resolutions NSIDE 4--32, with $C_{0.20}$ ranging approximately 0.60--0.64. A moderately concentrated but scale-persistent sky-structured field results: variation is neither uniform ($C_{0.20} \approx 0.20$ expected) nor dominated by a small number of extreme regions ($C_{0.20} \rightarrow 1$). Stability of $C_{0.20}$ across two orders of magnitude in angular resolution implies structure confinement to a narrow angular scale does not occur.
+
+\paragraph{Null test for footprint-driven concentration.}
+Assessment of whether observed concentration reflects spatial clustering of parallax residuals rather than heterogeneous sky footprint and source density employs a permutation null: per-superpixel median parallaxes $\tilde{\varpi}_s$ receive random permutation across superpixels while $N_s$ and sky positions remain fixed. Across 1000 permutations at NSIDE=32, the shuffled field yields $C_{0.20}$ with median 0.34 and 95\% interval [0.31, 0.37], substantially below observed $\approx 0.60$. Repetition with $w_s = |\tilde{\varpi}_s|$ (density weighting dropped) yields similar results: observed $C_{0.20} \approx 0.58$--0.62 while shuffled null remains $\approx 0.33$. Detected concentration exceeds the null expectation from footprint geometry alone, indicating spatial clustering in the parallax residual field.
+
+\subsection{Leverage diagnostics via top-\texorpdfstring{$K$}{K} masking}
+A diagnostic stress test excludes sources in top-ranked NSIDE=8 superpixels and recomputes global amplitude statistic $S$ at NSIDE=32. For $K \le 20$, removal of the most extreme regions produces negligible change in $S$; substantial reductions occur only after excision of many regions (Table~2).
+
+Low leverage with respect to the most extreme regions under this masking scheme results: global amplitude is not controlled by a small set of hotspots. Field amplitude reflects contributions from a broad fraction of sky. The ranking used for masking derives from an independently computed regional contribution estimator at NSIDE=8. Top-$K$ results are interpreted strictly as a leverage diagnostic rather than continuation of Lorenz-style concentration analysis.
+
+The test probes dominance of a few large sky patches (NSIDE=8 resolution) on the statistic. The test does not address whether fine-scale masking (higher NSIDE) alters the field or serves as a mitigation strategy.
+
+\subsection{Observation-history proxy correlation}
+
+To test whether spatial concentration correlates with Gaia's observation geometry, we computed median observation-history proxies for each NSIDE=16 superpixel and compared distributions between all regions and top-20\% contributors (Figure 3).
+
+Top-contributing regions are statistical outliers in all four proxies (Mann--Whitney $U$ test, all $p < 0.001$). This strong association with observation-history proxies indicates that the residual field is closely coupled to Gaia’s survey geometry and disfavors an interpretation as purely astrophysical parallax structure.
+
+\subsection{Joint interpretation: topology and fragility}
+Concentration and leverage diagnostics characterize the observed QSO parallax field as moderately concentrated, scale-persistent, and low top-$K$ leverage. Moderate inequality in weighted contribution, stability across angular resolutions, and weak sensitivity to removal of a small number of extreme regions occur. Field variance appears broadly distributed rather than hotspot-dominated.
+
+
+
+
+These proxies reflect observation-history and data-quality covariates consistent with calibration systematics. They do not uniquely identify a single mechanism; scan-geometry variables or calibration-model residuals would be required for mechanism attribution.

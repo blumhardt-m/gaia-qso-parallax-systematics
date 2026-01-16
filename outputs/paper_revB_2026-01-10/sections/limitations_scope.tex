@@ -1,0 +1,13 @@
+\section{Limitations and scope}
+
+This work is framed as a diagnostics study rather than a test of astrophysical hypotheses. Analyses treat the QSO sample as a reference-frame residual surface and characterize the structure of sky patterns without adjudication of physical origin.
+
+The concentration metric $C_{0.20}$ is based on weighted contribution $w_s = N_s |\tilde{\varpi}_s|$, quantifying spatial heterogeneity magnitude irrespective of sign. The choice targets variance rather than net bias; alternative weightings (e.g., squaring the median) would emphasize extremes differently but remain intentionally unexplored to avoid post-hoc tuning.
+
+Bootstrap confidence intervals compute via pixel resampling rather than source resampling, reflecting uncertainty in spatial field dispersion rather than within-pixel median estimation. Large per-pixel sample sizes typical at NSIDE=32 render within-pixel median uncertainty non-dominant for the reported field-level statistics.
+
+The leverage stress test masks regions ranked by an independently computed regional contribution estimator at NSIDE=8 and evaluates impact on global amplitude $S$ computed at NSIDE=32. Resolution mismatch remains deliberate: broad sky region influence on a fixed target statistic receives probe. The ranking metric external to the Lorenz-style concentration analysis renders top-$K$ results strictly diagnostic of leverage and fragility rather than an attempt to correct or optimize the sky map.
+
+The framework treats QSOs as a noisy reference frame; contamination or astrophysical parallax enters indistinguishably from calibration error. Literature estimates of Gaia DR3 QSO catalog purity range 85-95\% [3]. Even assuming 15\% stellar contamination concentrated in high-parallax regions, this would produce $C_{0.20} \approx 0.40$-$0.45$ under pessimistic assumptions. The observed $C_{0.20} = 0.60$ exceeds this 
+bound, and the strong correlation with observation-quality proxies (all $p < 0.001$) are most naturally explained by calibration-related effects.
+

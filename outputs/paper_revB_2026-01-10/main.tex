@@ -1,0 +1,60 @@
+% !TEX TS-program = pdflatex
+\documentclass[11pt]{article}
+
+% ---------- Layout ----------
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setstretch{1.10}
+
+% ---------- Math / Tables / Figures ----------
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.15}
+
+% ---------- References / Links ----------
+\usepackage[numbers]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Convenience ----------
+\usepackage{microtype}
+
+% ---------- Title metadata ----------
+\title{\bfseries Diagnosing Sky-Structured Parallax Residuals in Gaia DR3\\
+via Concentration and Leverage Tests on a Quasar Reference Sample}
+\author{Michael Blumhardt\\\small Independent Researcher}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/limitations_scope}
+\input{sections/conclusion}
+
+\clearpage
+
+\section*{Figures}
+\input{figures}
+
+\section*{Tables}
+\input{tables}
+
+% Bibliography intentionally omitted in current draft.
+% \bibliographystyle{plainnat}
+% \bibliography{references}
+
+\input{sections/data_availability}
+\clearpage
+\input{sections/references}
+\input{inputsections/appendix}
+
+\end{document}

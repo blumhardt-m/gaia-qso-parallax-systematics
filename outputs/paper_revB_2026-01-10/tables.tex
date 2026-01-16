@@ -1,0 +1,33 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Summary of field amplitude and concentration across resolution.} Baseline $S$ denotes the standard deviation of per-pixel median Gaia DR3 parallax at NSIDE=32 after fixed quality cuts. $C_{0.20}$ denotes the cumulative weighted contribution of the top 20\% sky regions at each NSIDE.}
+\label{tab:summary_concentration}
+\begin{tabular}{lll}
+\toprule
+Metric & Value & Notes \\
+\midrule
+Baseline $S$ (NSIDE=32)          & 0.241 [0.223, 0.259]          & Std.\ dev.\ of per-pixel median parallax \\
+$C_{0.20}$ (NSIDE=4)             & 0.616             & Top-20\% weighted contribution \\
+$C_{0.20}$ (NSIDE=8)             & 0.635             & Top-20\% weighted contribution \\
+$C_{0.20}$ (NSIDE=16)            & 0.629             & Top-20\% weighted contribution \\
+$C_{0.20}$ (NSIDE=32)            & 0.601             & Top-20\% weighted contribution \\
+Shuffled-null $C_{0.20}$ (NSIDE=32) & 0.34 [0.31, 0.37] & 1000 permutations, weighted $w_s = N_s|\tilde{\varpi}_s|$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Leverage under top-$K$ masking.} $S$ after masking top-$K$ NSIDE=8 superpixels by contribution, relative change $\Delta S/S$ (\%), and approximate masked sky fraction (assuming $\sim 70\%$ sky coverage at NSIDE=8 with 768 total pixels).}
+\label{tab:leverage_masking}
+\begin{tabular}{rccc}
+\toprule
+$K$ & $S$ & $\Delta S/S$ (\%) & Masked fraction (\%) \\
+\midrule
+5  & 0.235 & -2.3 & $\sim 0.9$ \\
+10 & 0.230 & -4.4 & $\sim 1.9$ \\
+20 & 0.225 & -6.5 & $\sim 3.7$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+

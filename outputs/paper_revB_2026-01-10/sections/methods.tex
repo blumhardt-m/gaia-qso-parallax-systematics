@@ -1,0 +1,61 @@
+\section{Methods}
+
+All statistics are pre-specified before inspection of results. No additional metrics are introduced post hoc.
+
+All pre-specified statistics are reported; no metrics were added after inspecting the results.
+Pre-specified diagnostics were:
+\begin{itemize}
+\item $S$ (NSIDE=32)
+\item $C_{0.20}$ at NSIDE 4, 8, 16, 32
+\item Top-$K$ masking for $K=\{5,10,20\}$
+\item Shuffle-null $C_{0.20}$
+\end{itemize}
+No other metrics were computed.
+
+\subsection{Data snapshot and fields}
+Analyses utilize a single frozen ``analysis-ready'' Parquet dataset containing Gaia DR3 source identifiers, sky coordinates (RA/Dec), parallax, and standard Gaia quality/coverage proxies. The pipeline design prioritizes reproducibility: data snapshot, cuts, and statistics remain locked before inspection of outcomes.
+
+\subsection{Quality cuts (locked)}
+Minimal quality cuts remove grossly unstable astrometric solutions while preserving large-scale sky footprint: (i) non-missing values required for RA, Dec, parallax, RUWE, and visibility periods used; (ii) sources retained with visibility\_periods\_used $\ge 8$; (iii) sources retained with RUWE $\le 1.4$. No additional thresholds are introduced after inspection.
+
+\subsection{HEALPix binning and per-pixel statistic}
+Sky discretization employs HEALPix in RING ordering. The primary map and global spatial summary use NSIDE = 32. Each occupied pixel $p$ receives per-pixel median parallax computation:
+\[
+\tilde{\varpi}_{p} = \mathrm{median}\{\varpi_i : i \in p\}.
+\]
+Median aggregation reduces sensitivity to outliers while preserving coherent sky structure.
+
+NSIDE=32 (~1.8° pixels) captures large-scale scanning-law footprint while maintaining sufficient source counts per pixel for robust median estimation. This resolution is appropriate for characterizing the scale of dominant residual structure affecting global reference-frame behavior; finer-scale analysis would require different diagnostic frameworks optimized for high-frequency patterns.
+
+\subsection{\texorpdfstring{Global amplitude statistic $S$}{Global amplitude statistic S} }
+Amplitude of sky-structured parallax variation receives summary via
+\[
+S = \mathrm{SD}\left(\{\tilde{\varpi}_{p}\}\right),
+\]
+the sample standard deviation (ddof=1) of per-pixel median parallaxes across occupied NSIDE=32 pixels.
+
+Uncertainty quantification employs a bootstrap over pixels: pixels are resampled with replacement (1000 resamples) and $S$ recomputed for each resample. The 95\% interval corresponds to the 2.5\% and 97.5\% quantiles of the bootstrap distribution. The bootstrap targets uncertainty in dispersion of the spatial field rather than within-pixel median estimation. Pixel-bootstrap intervals constitute a heuristic uncertainty summary; spatial correlations may reduce effective degrees of freedom.
+
+\subsection{\texorpdfstring{Concentration diagnostic: Lorenz curve and Top-20\% contribution}{Concentration diagnostic: Lorenz curve and Top-20 percent contribution}}
+Quantification of whether field magnitude is carried by a minority of sky regions employs a nonnegative contribution weight at a chosen HEALPix superpixel resolution:
+\[
+w_s = N_s \, |\tilde{\varpi}_s|,
+\]
+where $N_s$ denotes the number of sources in superpixel $s$ and $\tilde{\varpi}_s$ denotes the median parallax within $s$. A Lorenz-style cumulative contribution curve is computed by sorting superpixels by $w_s$ in descending order and plotting cumulative fraction of $\sum_s w_s$ versus cumulative fraction of superpixels.
+
+Concentration is summarized via the Top-20\% contribution statistic
+\[
+C_{0.20} = \frac{\sum_{s \in \text{top 20\%}} w_s}{\sum_s w_s},
+\]
+where ``top 20\%'' refers to the top $\lceil 0.2 n \rceil$ occupied superpixels by $w_s$. $C_{0.20}$ is reported at NSIDE=32 with assessment of stability across NSIDE $\in \{4,8,16,32\}$. Absolute value $|\tilde{\varpi}_s|$ quantifies heterogeneity magnitude irrespective of sign.
+
+A sensitivity check employs an unweighted variant $C_{0.20}(|\cdot|)$ with $w_s = |\tilde{\varpi}_s|$ (dropping $N_s$) to assess whether the descriptive pattern changes with removal of density weighting.
+
+\subsection{\texorpdfstring{Leverage diagnostic: top-\texorpdfstring{$K$}{K} masking stress test}{Leverage diagnostic: top-K masking stress test} (not corrective)}
+A diagnostic stress test probes whether global amplitude $S$ is driven by a small number of extreme regions: sources in top-ranked NSIDE=8 superpixels are excluded according to a precomputed regional contribution ranking and $S$ recomputed at NSIDE=32 on the masked dataset. The ranking functions as an independent leverage probe; masking does not serve a corrective procedure.
+
+Results are reported for $K \in \{5,10,20\}$ as the primary stress test set. Masking definition on a coarser partition tests whether large-area regions dominate NSIDE=32 dispersion; the intention excludes an optimized masking strategy.
+
+\subsection{Shuffle-null for footprint-driven concentration}
+Assessment of whether observed concentration reflects spatial clustering of parallax residuals rather than heterogeneous sky footprint and source density employs a permutation null: per-superpixel median parallaxes $\tilde{\varpi}_s$ are randomly permuted across superpixels while $N_s$ and sky positions remain fixed. The null distribution of $C_{0.20}$ is estimated from 1000 permutations at NSIDE=32. The same procedure is applied to the unweighted variant $w_s = |\tilde{\varpi}_s|$ as a density-removal sensitivity check.
+

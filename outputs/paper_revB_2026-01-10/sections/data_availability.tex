@@ -1,0 +1,9 @@
+\section*{Data Availability}
+
+Gaia DR3 data are publicly available via the Gaia archive: \url{https://gea.esac.esa.int/archive/}
+
+Analysis employed a locked dataset snapshot (\texttt{qso\_merged\_for\_triage\_analysis\_ready.parquet}) containing 4,963,513 Gaia DR3 quasar candidates; quality cuts retained 4,825,073 sources (97.2\% retention). Analysis code, figure generation scripts, and processed outputs available upon request.
+
+Computational environment: Python 3.13.0, pandas 2.2.0, numpy 1.24.3, healpy 1.17.0, scipy 1.11.4, matplotlib 3.8.2. All figures generated with locked quality cuts (RUWE $\leq 1.4$, visibility periods $\geq 8$) and pre-specified statistics; bootstrap resampling employed fixed seed (42) for reproducibility.
+
+SHA256 checksums and complete provenance documentation available with analysis package.
