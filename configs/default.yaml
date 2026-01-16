@@ -1,0 +1,37 @@
+gaia:
+  adql: |
+    SELECT TOP {TOP_N}
+      s.source_id,
+      s.ra, s.dec,
+      s.parallax, s.parallax_error,
+      s.phot_g_mean_mag,
+      s.bp_rp,
+      s.astrometric_params_solved,
+      s.nu_eff_used_in_astrometry,
+      s.pseudocolour,
+      s.astrometric_n_good_obs_al,
+      s.ruwe
+    FROM gaiadr3.gaia_source AS s
+    JOIN gaiadr3.qso_candidates AS q
+      USING (source_id)
+    WHERE s.parallax IS NOT NULL
+      AND s.parallax_error IS NOT NULL
+      AND s.phot_g_mean_mag BETWEEN 16 AND 21.5
+      AND s.parallax_error < 1.0
+      AND s.source_id > {LAST_ID}
+    ORDER BY s.source_id ASC
+  out_file: "data/raw/gaia_dr3_qso_candidates.parquet"
+
+maps:
+  nside_map: 32
+  nside_holdout: 32
+  min_count_per_pixel: 50
+  n_bootstrap: 60
+  random_seed: 0
+
+outputs:
+  maps_dir: "outputs/maps"
+  figures_dir: "outputs/figures"
+  tables_dir: "outputs/tables"
+  logs_dir: "outputs/logs"
+
