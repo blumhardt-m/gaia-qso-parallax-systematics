@@ -1,0 +1,33 @@
+# Computational Provenance Manifest
+# Generated: 2026-01-13
+
+## Input Data
+File: data/processed/triage_outputs_2026-01-09/qso_merged_for_triage_analysis_ready.parquet
+Rows (pre-cuts): 4,963,513
+Rows (post-cuts): 4,825,073
+Retention rate: 97.2%
+
+Quality cuts applied:
+- Non-null: ra, dec, parallax, ruwe, visibility_periods_used
+- visibility_periods_used >= 8
+- ruwe <= 1.4
+
+## Analysis Script
+File: scripts/make_map_lorenz.py
+Purpose: Generate HEALPix Mollweide projection at NSIDE=32
+
+## Output Figure
+File: outputs/paper_revB_2026-01-10/figures/map_lorenz.pdf
+Generated: $(date -Is)
+Pixels: 12288/12288 (all populated)
+Data range: [-0.4053, 0.4053] mas
+
+## Computational Environment
+Python: $(python3 --version)
+Pandas: $(python3 -c "import pandas; print(pandas.__version__)")
+Healpy: $(python3 -c "import healpy; print(healpy.__version__)")
+NumPy: $(python3 -c "import numpy; print(numpy.__version__)")
+
+## SHA256 Hashes
+Input: $(sha256sum data/processed/triage_outputs_2026-01-09/qso_merged_for_triage_analysis_ready.parquet | cut -d' ' -f1)
+Output: $(sha256sum outputs/paper_revB_2026-01-10/figures/map_lorenz.pdf | cut -d' ' -f1)
