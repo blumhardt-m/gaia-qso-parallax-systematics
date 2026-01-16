@@ -37,3 +37,28 @@ outputs/**/scripts/Unsaved*
 outputs/**/fig/
 outputs/**/figures/
 outputs/**/.gitkeep
+
+# --- Local run products ---
+results/
+
+# --- Outputs (keep only tracked manuscript sources) ---
+outputs/logs/
+outputs/maps/
+outputs/tables/
+outputs/paper/
+outputs/gaia_dr3_qso_parallax_systematics_draft
+
+# Paper build subfolders not tracked
+outputs/paper_revB_2026-01-10/scripts/
+outputs/paper_revB_2026-01-10/tables/
+outputs/paper_revB_2026-01-10/tables_build/
+outputs/paper_revB_2026-01-10/gaia_dr3_qso_parallax_systematics_draft
+outputs/paper_revB_2026-01-10/sections/check_nside128_concentration.py
+outputs/paper_revB_2026-01-10/sections/make_lorenz_signed_parent64.py
+
+# Top-level scratch
+scripts/
+setup_and_run_figure_generation.sh
+make_map_lorenz.py
+outputs_paper_locked.zip.sha256
+
