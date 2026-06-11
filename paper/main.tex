@@ -24,6 +24,8 @@
 \author{M. Blumhardt\inst{1}}
 \institute{Independent Researcher}
 \date{}
+\titlerunning{Concentration and leverage diagnostics for Gaia DR3 parallax residuals}
+\authorrunning{M. Blumhardt}
 
 \begin{document}
 \abstract{A reproducible diagnostic workflow characterizes sky-structured parallax residuals in Gaia DR3 using quasars as an approximate zero-parallax reference population. The QSO parallax field functions as a reference-frame residual surface whose spatial topology may reflect calibration structure, contamination, or other unmodeled effects. These diagnostics complement existing approaches that characterize mean parallax bias or angular covariance by instead quantifying whether the residual field is dominated by a small fraction of sky regions or reflects broadly distributed calibration structure. Metrics quantify that topology along two orthogonal axes: (i) concentration of weighted contribution across the sky via a Lorenz-style curve and Top-20\% contribution statistic, and (ii) leverage of extreme sky regions via a diagnostic top-$K$ masking stress test. Locked dataset snapshot, fixed quality cuts, and pre-specified statistics yield a moderately concentrated but scale-persistent field (Top-20\% contribution $\approx 0.60$ across NSIDE 4--32, exceeding footprint-only null of $\approx 0.34$) with low leverage to small-$K$ masking. Diagnostics quantify spatial behavior under aggregation and masking without identifying physical origin.}
@@ -39,7 +41,7 @@ Gaia parallaxes serve as foundational inputs to a broad range of astrophysical a
 
 Quasars (QSOs) serve as an effectively zero-parallax reference population. The resulting parallax field constitutes a reference-frame residual surface whose spatial topology may reflect calibration residuals, contamination, or other unmodeled effects. The objective is characterization of that topology with emphasis on operational consequences for downstream use. Three conceptually separate axes are distinguished: (i) field amplitude (magnitude of sky-structured variation), (ii) concentration (fraction of weighted contribution carried by a minority of sky regions), and (iii) leverage (sensitivity of amplitude to exclusion of a small number of extreme regions).
 
-This work is intended to complement, rather than replace, existing approaches to characterizing Gaia parallax systematics. Whereas prior studies primarily focus on estimating the magnitude of parallax bias or modeling its spatial correlation structure, the goal here is to provide diagnostic statistics that classify what kind of sky-structured systematic is present. In particular, we ask whether observed residual structure is dominated by a small number of localized, potentially maskable regions, or instead reflects a distributed calibration mode that contaminates a substantial fraction of the sky and therefore requires different downstream mitigation strategies.
+This work is intended to complement, rather than replace, existing approaches to characterizing Gaia parallax systematics. Whereas prior studies primarily focus on estimating the magnitude of parallax bias or modeling its spatial correlation structure, the goal here is to provide diagnostic statistics that classify what kind of sky-structured systematic is present. These diagnostics answer a mitigation question distinct from bias estimation and covariance modeling: whether systematic structure is hotspot-dominated and therefore plausibly maskable, or distributed across the footprint and therefore requiring explicit systematic modeling in downstream analyses.
 
 A minimal, locked set of statistics and quality cuts is defined prior to inspection of results. The approach centers the contribution on diagnostic tooling rather than post-hoc rationalization.
 
@@ -55,15 +57,13 @@ Independent analyses have also examined the spatial structure of quasar parallax
 
 A complementary line of work characterizes parallax systematics through angular covariance or correlation analyses. Using quasars to anchor large angular scales, often in combination with other reference populations, these studies quantify correlation lengths and systematic floors in Gaia parallaxes (e.g.\ Ma\'iz Apell\'aniz et al.\ 2021). Zinn (2021) extends this covariance-based validation to brighter magnitudes and smaller angular scales using asteroseismic parallaxes. While such analyses characterize how parallax errors correlate as a function of separation, they do not directly address questions of concentration or leverage of the residual field.
 
-The present work is complementary to all three approaches. Rather than proposing a new correction model, constructing alternative sky maps, or estimating an angular covariance function, we introduce diagnostic statistics that quantify the concentration of weighted parallax residual contribution across the sky and the leverage of extreme regions on global summary measures. These diagnostics are designed to answer a distinct operational question: whether sky-structured residuals are dominated by a small number of maskable regions or instead reflect a distributed calibration mode that affects most of the sky.
+The present work is complementary to all three approaches. Rather than proposing a new correction model, constructing alternative sky maps, or estimating an angular covariance function, this work introduces diagnostic statistics quantifying the concentration of weighted parallax residual contribution across the sky and the leverage of extreme regions on global summary measures. These diagnostics are designed to answer a distinct operational question: whether sky-structured residuals are dominated by a small number of maskable regions or instead reflect a distributed calibration mode that affects most of the sky.
 
 % --- END sections/introduction.tex ---
 % --- BEGIN sections/methods.tex ---
 \section{Methods}
 
-All statistics are pre-specified before inspection of results. No additional metrics are introduced post hoc.
-
-All pre-specified statistics are reported; no metrics were added after inspecting the results.
+All statistics are pre-specified before inspection of results; no metrics were added post hoc, and all pre-specified statistics are reported.
 Pre-specified diagnostics were:
 \begin{itemize}
 \item $S$ (NSIDE=32)
@@ -108,14 +108,14 @@ Concentration is summarized via the Top-20\% contribution statistic
 \[
 C_{0.20} = \frac{\sum_{s \in \text{top 20\%}} w_s}{\sum_s w_s},
 \]
-where ``top 20\%'' refers to the top $\lceil 0.2 n \rceil$ occupied superpixels by $w_s$. $C_{0.20}$ is reported at NSIDE=32 with assessment of stability across NSIDE $\in \{4,8,16,32\}$. Absolute value $|\tilde{\varpi}_s|$ quantifies heterogeneity magnitude irrespective of sign.
+where ``top 20\%'' refers to the top $\lceil 0.2 n \rceil$ occupied superpixels by $w_s$. $C_{0.20}$ is reported at NSIDE=32 with assessment of stability across NSIDE $\in \{4,8,16,32\}$. The Top-20\% threshold follows conventional Pareto-style concentration summaries and functions as a fixed reporting convention rather than a tuned parameter; sensitivity to angular resolution is assessed separately via the NSIDE stability analysis. Absolute value $|\tilde{\varpi}_s|$ quantifies heterogeneity magnitude irrespective of sign.
 
 A sensitivity check employs an unweighted variant $C_{0.20}(|\cdot|)$ with $w_s = |\tilde{\varpi}_s|$ (dropping $N_s$) to assess whether the descriptive pattern changes with removal of density weighting.
 
 \subsection{\texorpdfstring{Leverage diagnostic: top-\texorpdfstring{$K$}{K} masking stress test}{Leverage diagnostic: top-K masking stress test} (not corrective)}
 A diagnostic stress test probes whether global amplitude $S$ is driven by a small number of extreme regions: sources in top-ranked NSIDE=8 superpixels are excluded according to a precomputed regional contribution ranking and $S$ recomputed at NSIDE=32 on the masked dataset. The ranking functions as an independent leverage probe; masking does not serve a corrective procedure.
 
-Results are reported for $K \in \{5,10,20\}$ as the primary stress test set. Masking definition on a coarser partition tests whether large-area regions dominate NSIDE=32 dispersion; the intention excludes an optimized masking strategy.
+Results are reported for $K \in \{5,10,20\}$ as the primary stress test set. These values span the regime in which region exclusion remains operationally inexpensive ($\lesssim 4\%$ of sky); the set probes fragility to small-area excision rather than optimizing a masking strategy. Masking definition on a coarser partition tests whether large-area regions dominate NSIDE=32 dispersion.
 
 \subsection{Permutation null for footprint-driven concentration}
 Assessment of whether observed concentration reflects spatial clustering of parallax residuals rather than heterogeneous sky footprint and source density employs a permutation null: per-superpixel median parallaxes $\tilde{\varpi}_s$ are randomly permuted across superpixels while $N_s$ and sky positions remain fixed. The null distribution of $C_{0.20}$ is estimated from 1000 permutations at NSIDE=32. The same procedure is applied to the unweighted variant $w_s = |\tilde{\varpi}_s|$ as a density-removal sensitivity check.
@@ -142,9 +142,9 @@ The test probes dominance of a few large sky patches (NSIDE=8 resolution) on the
 
 \subsection{Observation-history proxy correlation}
 
-To test whether spatial concentration correlates with Gaia's observation geometry, we computed median observation-history proxies for each NSIDE=16 superpixel and compared distributions between all regions and top-20\% contributors (ranked by $w_s$) (Figure 3).
+To test whether spatial concentration correlates with Gaia's observation geometry, median observation-history proxies were computed for each NSIDE=16 superpixel and distributions compared between all regions and top-20\% contributors (ranked by $w_s$) (Figure 3).
 
-Top-contributing regions are statistical outliers in all four proxies (Mann--Whitney $U$ test, all $p < 0.001$). This strong association with observation-history proxies is more naturally consistent with survey-geometry--coupled systematics than with a purely astrophysical origin.
+Top-contributing regions are statistical outliers in all four proxies (Mann--Whitney $U$ test, all $p < 0.001$). This strong association with observation-history proxies is consistent with, though not uniquely diagnostic of, survey-geometry--coupled systematics.
 
 \subsection{Joint interpretation: topology and fragility}
 Concentration and leverage diagnostics characterize the observed QSO parallax field as moderately concentrated, scale-persistent, and low top-$K$ leverage. Moderate inequality in weighted contribution, stability across angular resolutions, and weak sensitivity to removal of a small number of extreme regions occur. Field variance appears broadly distributed rather than hotspot-dominated.
@@ -165,8 +165,7 @@ Bootstrap confidence intervals compute via pixel resampling rather than source r
 
 The leverage stress test masks regions ranked by an independently computed regional contribution estimator at NSIDE=8 and evaluates impact on global amplitude $S$ computed at NSIDE=32. Resolution mismatch remains deliberate: broad sky region influence on a fixed target statistic receives probe. The ranking metric external to the Lorenz-style concentration analysis renders top-$K$ results strictly diagnostic of leverage and fragility rather than an attempt to correct or optimize the sky map.
 
-The framework treats QSOs as a noisy reference frame; contamination or astrophysical parallax enters indistinguishably from calibration structure. Literature estimates of Gaia DR3 QSO catalog purity are high (order 85--95\%). Even assuming 15\% stellar contamination concentrated in high-parallax regions, this would produce $C_{0.20} \approx 0.40$-$0.45$ under pessimistic assumptions. The observed $C_{0.20} = 0.60$ exceeds this 
-bound, and the strong correlation with observation-quality proxies (all $p < 0.001$) are most naturally explained by calibration-related effects.
+The framework treats QSOs as a noisy reference frame; contamination or astrophysical parallax enters indistinguishably from calibration structure. Literature estimates of Gaia DR3 QSO catalog purity are high (order 85--95\%). Even assuming 15\% stellar contamination concentrated in high-parallax regions, this would produce $C_{0.20} \approx 0.40$-$0.45$ under pessimistic assumptions. The observed $C_{0.20} = 0.60$ exceeds this bound, and the strong correlation with observation-quality proxies (all $p < 0.001$) is consistent with calibration-related effects, though contamination and astrophysical contributions are not excluded by these diagnostics alone.
 
 % --- END sections/limitations_scope.tex ---
 % --- BEGIN sections/conclusion.tex ---
@@ -174,9 +173,9 @@ bound, and the strong correlation with observation-quality proxies (all $p < 0.0
 
 Quasars serve as a zero-parallax reference. A reproducible diagnostic framework separates field amplitude, concentration, and leverage in sky-structured Gaia DR3 parallax fields. The framework characterizes a moderately concentrated, scale-persistent residual field with low leverage to small-$K$ masking. The diagnostics quantify whether a residual field exhibits spatial clustering beyond footprint geometry alone and whether dominance by a few sky regions or broad distribution at chosen resolution occurs.
 
-The concentration and leverage diagnostics introduced here provide axes that are orthogonal to the mean-bias correction framework of Lindegren et al.\ (2021b) and to angular covariance characterizations (e.g.\ Ma\'iz Apell\'aniz et al.\ 2021), addressing whether sky-structured parallax residuals are localized and maskable or instead reflect a distributed calibration mode requiring explicit systematics handling.
+The concentration and leverage diagnostics introduced here provide axes that are orthogonal to the mean-bias correction framework of Lindegren et al.\ (2021b) and to angular covariance characterizations (e.g.\ Ma\'iz Apell\'aniz et al.\ 2021), addressing whether sky-structured parallax residuals are localized and maskable or instead reflect a distributed calibration mode requiring explicit systematics handling. For Gaia DR3, the diagnostics place the observed field in the latter regime: at the tested angular scales, small-area masking is insufficient to substitute for explicit systematics handling.
 
-Correlation with observation-history proxies indicates the residual field is most naturally explained by calibration-related effects, though specific mechanism attribution (e.g., chromaticity vs. basic-angle variation) requires dedicated calibration modeling beyond this diagnostic framework. The tooling quantifies the degree to which sky structure meaningfully influences downstream analyses.
+Correlation with observation-history proxies is consistent with a calibration-related origin, though specific mechanism attribution (e.g., chromaticity vs. basic-angle variation) requires dedicated calibration modeling beyond this diagnostic framework. The tooling quantifies the degree to which sky structure meaningfully influences downstream analyses.
 
 The conclusion concerns masking of a small sky fraction at the tested angular scale; fine-grained or scan-conditioned masking strategies are not addressed.
 
@@ -258,7 +257,7 @@ $K$ & $S$ & $\Delta S/S$ (\%) & Masked (\%) \\
 
 Gaia DR3 data are publicly available via the Gaia archive: \url{https://gea.esac.esa.int/archive/}
 
-Analysis employed a locked dataset snapshot (\path{qso_merged_for_triage_analysis_ready.parquet}) containing 4,963,513 Gaia DR3 quasar candidates; quality cuts retained 4,825,073 sources (97.2\% retention). Analysis code, figure generation scripts, and processed outputs available upon request.
+Analysis employed a locked dataset snapshot (\path{qso_merged_for_triage_analysis_ready.parquet}) containing 4,963,513 Gaia DR3 quasar candidates; quality cuts retained 4,825,073 sources (97.2\% retention). Analysis code, figure generation scripts, and processed outputs are publicly available at \url{https://github.com/blumhardt-m/gaia-qso-parallax-systematics}.
 
 Computational environment: Python 3.13.0, pandas 2.2.0, numpy 1.24.3, healpy 1.17.0, scipy 1.11.4, matplotlib 3.8.2. All figures generated with locked quality cuts (RUWE $\leq 1.4$, visibility periods $\geq 8$) and pre-specified statistics; bootstrap resampling employed fixed seed (42) for reproducibility.
 
@@ -294,10 +293,11 @@ SHA256 checksums and complete provenance documentation available with analysis p
 This appendix provides supporting analysis on the resolution behavior of the
 concentration diagnostic and motivates the signed-aggregate definition used
 throughout the main text. No additional diagnostics are introduced for inference.
+The main-text statistic $C_{0.20}$, computed from $w_s = N_s|\tilde{\varpi}_s|$ with the median taken directly over sources within each superpixel, is itself of signed-aggregate (abs-after-aggregation) type at the corresponding scale; the analysis below examines the behavior of this construction under pixel refinement.
 
 \paragraph{Resolution robustness.}
 To assess sensitivity of the concentration diagnostic to angular resolution,
-we recomputed the signed-aggregate Top-20\% statistic while varying the child
+the signed-aggregate Top-20\% statistic was recomputed while varying the child
 HEALPix resolution over
 $\mathrm{NSIDE}_{\mathrm{child}} \in \{64,128,256\}$,
 holding the parent grid fixed at
@@ -311,7 +311,7 @@ is not an artifact of pixel-scale choice.
 
 \paragraph{Sign cancellation in legacy definitions.}
 To quantify the mechanism underlying the strong resolution dependence of
-legacy concentration definitions, we compute a sign-cancellation diagnostic
+legacy concentration definitions, a sign-cancellation diagnostic is computed:
 \[
 \mathrm{cancel\_ratio}
 = \frac{\sum_P |S_P|}{\sum_c |s_c|},
@@ -320,7 +320,7 @@ where $s_c = N_c \tilde{\varpi}_c$ denotes signed child-pixel contributions and
 $S_P = \sum_{c \in P} s_c$ their aggregation into parent pixels.
 A value of $\mathrm{cancel\_ratio} < 1$ indicates cancellation of opposite-sign
 contributions within parent pixels.
-We find $\mathrm{cancel\_ratio} = 1.00$ at
+The computed $\mathrm{cancel\_ratio}$ is $1.00$ at
 $\mathrm{NSIDE}_{\mathrm{child}} = 64$, decreasing to $0.64$ at $128$ and
 $0.40$ at $256$.
 This behavior indicates increasing within-parent sign cancellation at finer
@@ -334,11 +334,14 @@ pixel refinement at the scales relevant to this study.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{lorenz_curve_legacy.pdf}
-\caption{\textbf{Legacy Lorenz curve (abs-before-sum), shown for comparison.}
-Lorenz-style curve computed at NSIDE=32 using $w_p = N_p|\tilde{\varpi}_p|$.
-Because the absolute value is applied prior to spatial aggregation, this
-definition is not invariant under pixel refinement and is not used for
-inference in this work.}
+\caption{\textbf{Lorenz curve under the signed-aggregate construction.}
+Cumulative weighted contribution computed from parent-pixel aggregates
+$S_P = \sum_{c \in P} s_c$ with $\mathrm{NSIDE}_{\mathrm{child}} = 128$ and
+$\mathrm{NSIDE}_{\mathrm{parent}} = 64$, yielding
+$C_{0.20}^{\mathrm{signed}} = 0.562$. The absolute value is applied after
+spatial aggregation, rendering the statistic substantially invariant under
+pixel refinement, in contrast to the legacy abs-before-sum definition
+discussed in the text.}
 \label{fig:lorenz_legacy_appendix}
 \end{figure}
 % --- END sections/appendix.tex ---
